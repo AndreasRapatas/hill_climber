@@ -3,12 +3,16 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "./hill_climber.h"
+
 using namespace std;
 using namespace sf;
 
 int main() {
 
-	RenderWindow window(VideoMode(200, 100), "Hill Climber");
+	HillClimber hillclimber("../data/img.png");
+
+	RenderWindow window(VideoMode(hillclimber.get_width(), hillclimber.get_height()), "Hill Climber");
 	window.setVerticalSyncEnabled(true);
 
 	while (window.isOpen()) {
@@ -24,6 +28,8 @@ int main() {
 		}
 
 		window.clear();
+		hillclimber.step();
+		window.draw(hillclimber);
 		window.display();
 	}
 
