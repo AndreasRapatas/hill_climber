@@ -28,7 +28,9 @@ int main() {
 		}
 
 		window.clear();
-		hillclimber.step();
+		for (unsigned i = 0; i != 50; ++i) {
+			hillclimber.step();
+		}
 		window.draw(hillclimber);
 		window.display();
 	}
