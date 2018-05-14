@@ -66,8 +66,18 @@ public:
 
 		sf::Image tmp = result;
 
-		unsigned x = rand() % width;
-		unsigned y = rand() % height;
+		unsigned xl = rand() % width;
+		unsigned xr = rand() % width;
+		unsigned yt = rand() % height;
+		unsigned yb = rand() % height;
+
+		if (xl > xr) {
+			std::swap(xl, xr);
+		}
+		if (yt > yb) {
+			std::swap(yt, yb);
+		}
+
 		sf::Color color(
 			rand() % 255,
 			rand() % 255,
@@ -75,7 +85,11 @@ public:
 			rand() % 255
 		);
 
-		tmp.setPixel(x, y, color);
+		for (unsigned y = yt; y != yb; ++y) {
+			for (unsigned x = xl; x != xr; ++x) {
+				tmp.setPixel(x, y, color);
+			}
+		}
 
 		double cur_fitness = compare(tmp, original);
 
