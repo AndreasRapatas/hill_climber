@@ -68,8 +68,14 @@ public:
 
 		unsigned x = rand() % width;
 		unsigned y = rand() % height;
+		sf::Color color(
+			rand() % 255,
+			rand() % 255,
+			rand() % 255,
+			rand() % 255
+		);
 
-		tmp.setPixel(x, y, sf::Color::White);
+		tmp.setPixel(x, y, color);
 
 		double cur_fitness = compare(tmp, original);
 
