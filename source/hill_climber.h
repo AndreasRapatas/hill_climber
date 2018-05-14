@@ -26,18 +26,28 @@ class HillClimber : public sf::Drawable, public sf::Transformable {
 
 	double compare(const sf::Image &a, const sf::Image &b) {
 
-		unsigned same = 0;
+		double similarity = 0;
 
-		for (unsigned y = 0; y != height; ++y) {
-			for (unsigned x = 0; x != width; ++x) {
+		for (unsigned y = 0; y != a.getSize().y; ++y) {
+			for (unsigned x = 0; x != a.getSize().x; ++x) {
 
-				if (a.getPixel(x, y) == b.getPixel(x, y)) {
-					++same;
-				}
+				double pixel_sim = 0;
+
+				sf::Color ca(a.getPixel(x, y));
+				sf::Color cb(b.getPixel(x, y));
+
+				pixel_sim += abs(ca.r - cb.r);
+				pixel_sim += abs(ca.g - cb.g);
+				pixel_sim += abs(ca.b - cb.b);
+				pixel_sim += abs(ca.a - cb.a);
+
+				pixel_sim = 1 - (pixel_sim / (float) 1020);
+
+				similarity += pixel_sim;
 			}
 		}
 
-		return same / (float) (width * height);
+		return similarity / (float) a.getSize().x * (float) a.getSize().y;
 	}
 
 public:
