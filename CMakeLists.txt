@@ -21,6 +21,7 @@ project(
 add_executable(
 	${PROJECT_NAME}
 	./source/main.cpp
+	./source/hill_climber.cpp
 )
 
 # SFML
