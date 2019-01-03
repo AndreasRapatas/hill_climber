@@ -17,7 +17,7 @@ class HillClimber : public sf::Drawable, public sf::Transformable {
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	double compare(const sf::Image &a, const sf::Image &b);
+	double compare(const sf::Image &a, const sf::Image &b) const;
 
 public:
 

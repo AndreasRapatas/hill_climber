@@ -9,7 +9,7 @@ void HillClimber::draw(sf::RenderTarget& target, sf::RenderStates states) const 
 	target.draw(sprite, states);
 }
 
-double HillClimber::compare(const sf::Image &a, const sf::Image &b) {
+double HillClimber::compare(const sf::Image &a, const sf::Image &b) const {
 
 	double similarity = 0;
 
