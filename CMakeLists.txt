@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.0)
 
 # Required for YCM to work
@@ -9,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(
-	hill_drawer
+	hill_climber
 	VERSION 0.0.0
 	LANGUAGES CXX
 )
