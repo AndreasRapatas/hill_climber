@@ -1,4 +1,5 @@
 #include "hill_climber.h"
+#include <iostream>
 
 void HillClimber::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
@@ -50,27 +51,24 @@ void HillClimber::step() {
 
 	sf::Image tmp = result;
 
-	unsigned xl = rand() % width;
-	unsigned xr = rand() % width;
-	unsigned yt = rand() % height;
-	unsigned yb = rand() % height;
+	sf::Vector2u top_left(rand() % width, rand() % height);
+	sf::Vector2u bottom_right(rand() % width, rand() % height);
 
-	if (xl > xr) {
-		std::swap(xl, xr);
+	if (top_left.x > bottom_right.x) {
+		std::swap(top_left.x, bottom_right.x);
 	}
-	if (yt > yb) {
-		std::swap(yt, yb);
+	if (top_left.y > bottom_right.y) {
+		std::swap(top_left.y, bottom_right.y);
 	}
 
 	sf::Color color(
 		rand() % 255,
 		rand() % 255,
-		rand() % 255,
 		rand() % 255
 	);
 
-	for (unsigned y = yt; y != yb; ++y) {
-		for (unsigned x = xl; x != xr; ++x) {
+	for (unsigned y = top_left.y; y != bottom_right.y; ++y) {
+		for (unsigned x = top_left.x; x != bottom_right.x; ++x) {
 			tmp.setPixel(x, y, color);
 		}
 	}
