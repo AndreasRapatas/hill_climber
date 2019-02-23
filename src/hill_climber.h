@@ -1,6 +1,7 @@
 #ifndef HILL_CLIMBER_H
 #define HILL_CLIMBER_H
 
+#include <random>
 #include <SFML/Graphics.hpp>
 
 class HillClimber : public sf::Drawable, public sf::Transformable {
@@ -12,6 +13,11 @@ class HillClimber : public sf::Drawable, public sf::Transformable {
 	unsigned height;
 	mutable sf::Texture texture;
 	mutable sf::Sprite sprite;
+
+	mutable std::mt19937 generator;
+	mutable std::uniform_int_distribution<unsigned> width_distribution;
+	mutable std::uniform_int_distribution<unsigned> height_distribution;
+	std::uniform_int_distribution<unsigned> color_distribution;
 
 	double fitness = 0;
 

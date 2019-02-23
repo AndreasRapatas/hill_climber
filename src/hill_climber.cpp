@@ -59,8 +59,14 @@ double HillClimber::apply(
 
 sf::Rect<unsigned> HillClimber::create_random_rect() const {
 
-	sf::Vector2u top_left(rand() % width, rand() % height);
-	sf::Vector2u bottom_right(rand() % width, rand() % height);
+	sf::Vector2u top_left(
+		width_distribution(generator),
+		height_distribution(generator)
+	);
+	sf::Vector2u bottom_right(
+		width_distribution(generator),
+		height_distribution(generator)
+	);
 
 	if (top_left.x > bottom_right.x) {
 		std::swap(top_left.x, bottom_right.x);
@@ -84,6 +90,10 @@ HillClimber::HillClimber(const std::string &path) {
 	width  = original.getSize().x;
 	height = original.getSize().y;
 
+	width_distribution  = std::uniform_int_distribution<unsigned>(0, width);
+	height_distribution = std::uniform_int_distribution<unsigned>(0, height);
+	color_distribution  = std::uniform_int_distribution<unsigned>(0, 255);
+
 	result.create(width, height, sf::Color::Black);
 }
 
@@ -92,9 +102,9 @@ void HillClimber::step() {
 	auto rect = create_random_rect();
 
 	sf::Color color(
-		rand() % 255,
-		rand() % 255,
-		rand() % 255
+		color_distribution(generator),
+		color_distribution(generator),
+		color_distribution(generator)
 	);
 
 	double cur_fitness = apply(rect, color);
