@@ -1,8 +1,9 @@
 #include "hill_climber.h"
-#include <iostream>
 
-void HillClimber::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-
+void HillClimber::draw(
+	sf::RenderTarget& target,
+	sf::RenderStates states
+) const {
 	texture.loadFromImage(result);
 	sprite.setTexture(texture);
 
@@ -10,46 +11,53 @@ void HillClimber::draw(sf::RenderTarget& target, sf::RenderStates states) const 
 	target.draw(sprite, states);
 }
 
-double HillClimber::compare(const sf::Image &a, const sf::Image &b) const {
+double HillClimber::pixel_similatity(
+	const sf::Color &a,
+	const sf::Color &b
+) const {
+
+	double pixel_sim = 0;
+
+	pixel_sim += abs(a.r - b.r);
+	pixel_sim += abs(a.g - b.g);
+	pixel_sim += abs(a.b - b.b);
+	pixel_sim += abs(a.a - b.a);
+
+	return 1 - (pixel_sim / (255 * 4.0f));
+}
+
+double HillClimber::apply(
+	const sf::Rect<unsigned> &rect,
+	const sf::Color color
+) const {
 
 	double similarity = 0;
 
-	for (unsigned y = 0; y != a.getSize().y; ++y) {
-		for (unsigned x = 0; x != a.getSize().x; ++x) {
+	for (unsigned y = 0; y != height; ++y) {
+		for (unsigned x = 0; x != width; ++x) {
 
-			double pixel_sim = 0;
+			sf::Color original_color(original.getPixel(x, y));
+			sf::Color new_color;
 
-			sf::Color ca(a.getPixel(x, y));
-			sf::Color cb(b.getPixel(x, y));
+			if (
+				x >= rect.left
+				&& x < rect.left + rect.width
+				&& y >= rect.top
+				&& y < rect.top + rect.height
+			) {
+				new_color = color;
+			} else {
+				new_color = result.getPixel(x, y);
+			}
 
-			pixel_sim += abs(ca.r - cb.r);
-			pixel_sim += abs(ca.g - cb.g);
-			pixel_sim += abs(ca.b - cb.b);
-			pixel_sim += abs(ca.a - cb.a);
-
-			pixel_sim = 1 - (pixel_sim / (float) 1020);
-
-			similarity += pixel_sim;
+			similarity += pixel_similatity(original_color, new_color);
 		}
 	}
 
-	return similarity / (float) a.getSize().x * (float) a.getSize().y;
+	return similarity / (float) width * (float) height;
 }
 
-
-HillClimber::HillClimber(const std::string &path) {
-
-	original.loadFromFile(path);
-
-	width = original.getSize().x;
-	height = original.getSize().y;
-
-	result.create(width, height, sf::Color::Black);
-}
-
-void HillClimber::step() {
-
-	sf::Image tmp = result;
+sf::Rect<unsigned> HillClimber::create_random_rect() const {
 
 	sf::Vector2u top_left(rand() % width, rand() % height);
 	sf::Vector2u bottom_right(rand() % width, rand() % height);
@@ -61,23 +69,45 @@ void HillClimber::step() {
 		std::swap(top_left.y, bottom_right.y);
 	}
 
+	return {
+		top_left.x,
+		top_left.y,
+		bottom_right.x - top_left.x,
+		bottom_right.y - top_left.y
+	};
+}
+
+HillClimber::HillClimber(const std::string &path) {
+
+	original.loadFromFile(path);
+
+	width  = original.getSize().x;
+	height = original.getSize().y;
+
+	result.create(width, height, sf::Color::Black);
+}
+
+void HillClimber::step() {
+
+	auto rect = create_random_rect();
+
 	sf::Color color(
 		rand() % 255,
 		rand() % 255,
 		rand() % 255
 	);
 
-	for (unsigned y = top_left.y; y != bottom_right.y; ++y) {
-		for (unsigned x = top_left.x; x != bottom_right.x; ++x) {
-			tmp.setPixel(x, y, color);
-		}
-	}
-
-	double cur_fitness = compare(tmp, original);
+	double cur_fitness = apply(rect, color);
 
 	if (cur_fitness > fitness) {
-		result = tmp;
+
 		fitness = cur_fitness;
+
+		for (unsigned y = rect.top; y != rect.top + rect.height; ++y) {
+			for (unsigned x = rect.left; x != rect.left + rect.width; ++x) {
+				result.setPixel(x, y, color);
+			}
+		}
 	}
 }
 

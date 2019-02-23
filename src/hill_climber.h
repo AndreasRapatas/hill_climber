@@ -17,7 +17,11 @@ class HillClimber : public sf::Drawable, public sf::Transformable {
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	double compare(const sf::Image &a, const sf::Image &b) const;
+	double apply(const sf::Rect<unsigned> &rect, const sf::Color color) const;
+
+	double pixel_similatity(const sf::Color &a, const sf::Color &b) const;
+
+	sf::Rect<unsigned> create_random_rect() const;
 
 public:
 
@@ -26,6 +30,7 @@ public:
 	void step();
 
 	unsigned get_width() const;
+
 	unsigned get_height() const;
 };
 
