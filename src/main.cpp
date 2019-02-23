@@ -2,14 +2,12 @@
 
 #include "./hill_climber.h"
 
-using namespace sf;
-
 int main() {
 
 	HillClimber hillclimber("../data/img.png");
 
-	RenderWindow window(
-		VideoMode(
+	sf::RenderWindow window(
+		sf::VideoMode(
 			hillclimber.get_width(),
 			hillclimber.get_height()
 		),
@@ -19,20 +17,21 @@ int main() {
 
 	while (window.isOpen()) {
 
-		Event event;
+		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (
-				event.type == Event::Closed
-				|| event.key.code == Keyboard::Escape
+				event.type == sf::Event::Closed
+				|| event.key.code == sf::Keyboard::Escape
 			) {
 				window.close();
 			}
 		}
 
-		window.clear();
 		for (unsigned i = 0; i != 50; ++i) {
 			hillclimber.step();
 		}
+
+		window.clear();
 		window.draw(hillclimber);
 		window.display();
 	}
