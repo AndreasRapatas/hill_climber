@@ -41,3 +41,12 @@ target_link_libraries(
 )
 
 # }}}
+
+# Install {{{
+
+install(
+	TARGETS ${PROJECT_NAME}
+	RUNTIME DESTINATION bin COMPONENT Runtime
+)
+
+# }}}

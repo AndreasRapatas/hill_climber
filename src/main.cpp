@@ -1,10 +1,17 @@
 #include <SFML/Graphics.hpp>
+#include <stdio.h>
 
 #include "./hill_climber.h"
 
-int main() {
+int main(int argc, char *argv[]) {
 
-	HillClimber hillclimber("../data/img.png");
+	if (argc != 2) {
+		printf("Invalid parameters!");
+		printf("Usage: hill_climber \"/path/to/image.png\"\n");
+		return 1;
+	}
+
+	HillClimber hillclimber(argv[1]);
 
 	sf::RenderWindow window(
 		sf::VideoMode(
