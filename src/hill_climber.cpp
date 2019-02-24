@@ -26,35 +26,33 @@ double HillClimber::pixel_similatity(
 	return 1 - (pixel_sim / (255 * 4.0f));
 }
 
-double HillClimber::apply(
+bool HillClimber::is_better(
 	const sf::Rect<unsigned> &rect,
 	const sf::Color color
 ) const {
 
-	double similarity = 0;
+	double current_similarity = 0;
+	double new_similarity     = 0;
 
-	for (unsigned y = 0; y != height; ++y) {
-		for (unsigned x = 0; x != width; ++x) {
+	for (unsigned y = rect.top; y != rect.top + rect.height; ++y) {
+		for (unsigned x = rect.left; x != rect.left + rect.width; ++x) {
 
-			sf::Color original_color(original.getPixel(x, y));
-			sf::Color new_color;
-
-			if (
-				x >= rect.left
-				&& x < rect.left + rect.width
-				&& y >= rect.top
-				&& y < rect.top + rect.height
-			) {
-				new_color = color;
-			} else {
-				new_color = result.getPixel(x, y);
-			}
-
-			similarity += pixel_similatity(original_color, new_color);
+			current_similarity += pixel_similatity(
+				original.getPixel(x, y),
+				result.getPixel(x, y)
+			);
+			new_similarity += pixel_similatity(
+				original.getPixel(x, y),
+				color
+			);
 		}
 	}
 
-	return similarity / (float) width * (float) height;
+	// Normalize to [0-1]
+	current_similarity = current_similarity / (rect.height * rect.width);
+	new_similarity     = new_similarity     / (rect.height * rect.width);
+
+	return (new_similarity > current_similarity);
 }
 
 sf::Rect<unsigned> HillClimber::create_random_rect() const {
@@ -75,12 +73,18 @@ sf::Rect<unsigned> HillClimber::create_random_rect() const {
 		std::swap(top_left.y, bottom_right.y);
 	}
 
-	return {
+	sf::Rect<unsigned> rect {
 		top_left.x,
 		top_left.y,
 		bottom_right.x - top_left.x,
 		bottom_right.y - top_left.y
 	};
+
+	if (rect.width * rect.height == 0) {
+		return create_random_rect();
+	} else {
+		return rect;
+	}
 }
 
 HillClimber::HillClimber(const std::string &path) {
@@ -107,11 +111,7 @@ void HillClimber::step() {
 		color_distribution(generator)
 	);
 
-	double cur_fitness = apply(rect, color);
-
-	if (cur_fitness > fitness) {
-
-		fitness = cur_fitness;
+	if (is_better(rect, color)) {
 
 		for (unsigned y = rect.top; y != rect.top + rect.height; ++y) {
 			for (unsigned x = rect.left; x != rect.left + rect.width; ++x) {

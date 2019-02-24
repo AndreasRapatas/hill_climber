@@ -23,7 +23,7 @@ class HillClimber : public sf::Drawable, public sf::Transformable {
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	double apply(const sf::Rect<unsigned> &rect, const sf::Color color) const;
+	bool is_better(const sf::Rect<unsigned> &rect, const sf::Color color) const;
 
 	double pixel_similatity(const sf::Color &a, const sf::Color &b) const;
 
